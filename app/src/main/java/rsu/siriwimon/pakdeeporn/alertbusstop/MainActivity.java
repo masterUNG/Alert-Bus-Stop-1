@@ -1,5 +1,6 @@
 package rsu.siriwimon.pakdeeporn.alertbusstop;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
                 Log.d("31octV1","You Click Long"); //ควบคุมการคลิก
+
+                startActivity(new Intent(MainActivity.this,AddBusStop.class));//เคลื่อนย้ายการทำงาน
 
                 return true;
 

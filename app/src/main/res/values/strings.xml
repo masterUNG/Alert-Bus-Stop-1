@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Alert Bus Stop</string>
+    <string name="title_activity_add_bus_stop">Map</string>
 </resources>
