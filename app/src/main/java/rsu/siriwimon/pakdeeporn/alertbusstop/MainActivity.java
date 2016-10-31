@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
                 Log.d("31octV1","You Click Long"); //ควบคุมการคลิก
+
                 return true;
 
             } // onLongClick
