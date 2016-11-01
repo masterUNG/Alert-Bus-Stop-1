@@ -32,6 +32,7 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
     private Uri uri;
     private double laStartADouble = 13.964987 ;
     private double lngStartADouble = 100.585154 ;
+    private  double laBusStopADouble, lngBusStopADouble ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,5 +133,18 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
        // create Map
         LatLng centerLatLng = new LatLng(laStartADouble, lngStartADouble);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, 16)); // 16 คือตำแหน่งซูม มุมมอง
+
+
+        // get event from clack map
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+                mMap.clear(); //ลบมากเกอร์ต่างๆ
+                mMap.addMarker(new MarkerOptions()
+                .position(latLng));
+
+            } // on map click
+        });
     } // onMapReady
 } // Main Class
