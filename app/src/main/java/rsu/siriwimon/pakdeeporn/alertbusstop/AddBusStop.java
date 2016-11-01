@@ -144,6 +144,12 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
                 mMap.addMarker(new MarkerOptions()
                 .position(latLng));
 
+                laBusStopADouble = latLng.latitude; // เลือกค่าละลอง
+                lngBusStopADouble = latLng.longitude;
+
+                Log.d("1novV1","Lat ==>" + laBusStopADouble);
+                Log.d("1novV1", "lng ==>" + lngBusStopADouble);
+
             } // on map click
         });
     } // onMapReady
