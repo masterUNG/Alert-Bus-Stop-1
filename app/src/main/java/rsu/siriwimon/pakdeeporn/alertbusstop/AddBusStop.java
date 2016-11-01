@@ -1,6 +1,8 @@
 package rsu.siriwimon.pakdeeporn.alertbusstop;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -25,7 +27,8 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
     private Button button;
     private String nameBusStopString;
     private ImageView recodImageView, playimImageView;
-
+    private boolean aBoolean = true; // nonrecord sound
+    private Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,24 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
                    } // if
            } // onClick
        });
+        //play controller
+        playimImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+             //check record
+                if (aBoolean) {
+                    // non record ไม่มีการบันทึกเสียงให้แจ้ง
+                    MyAlert myAlert = new MyAlert(AddBusStop.this, R.drawable.nobita48,
+                            getResources().getString(R.string.title_record_sound),
+                            getResources().getString(R.string.massage_record_sound));
+                    myAlert.myDialog();
+                } else {
+                    // record ok ให้เสียงร้องเล่นเสียง
+                    MediaPlayer mediaPlayer = MediaPlayer.create(AddBusStop.this,uri);
+                    mediaPlayer.start();
+                }
+            } // onclick
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -80,6 +101,8 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
 
         if ((requestCode == 0)&&(resultCode == RESULT_OK)){
             Log.d("lnovV1","Result OK");
+            aBoolean = false; //record sound ok
+            uri = data.getData();
 
         }//if การบันทึกเสียง ถ้าบันทึกเสร็จให้กลับมาหน้าเดิม
 
