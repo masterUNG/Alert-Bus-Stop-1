@@ -1,6 +1,7 @@
 package rsu.siriwimon.pakdeeporn.alertbusstop;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -25,7 +26,7 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private EditText editText;
     private Button button;
-    private String nameBusStopString;
+    private String nameBusStopString, pathAudioString;
     private ImageView recodImageView, playimImageView;
     private boolean aBoolean = true; // nonrecord sound
     private Uri uri;
@@ -100,9 +101,22 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
         super.onActivityResult(requestCode, resultCode, data);
 
         if ((requestCode == 0)&&(resultCode == RESULT_OK)){
-            Log.d("lnovV1","Result OK");
+            Log.d("1novV1","Result OK");
             aBoolean = false; //record sound ok
             uri = data.getData();
+
+            //Find Path of Audio ที่อยู่ของเสียง
+            String[] strings = {MediaStore.Audio.Media.DATA};
+            Cursor cursor = getContentResolver().query(uri, strings, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+                pathAudioString = cursor.getString(index);
+            } else {
+                pathAudioString = uri.getPath();
+            }
+
+            Log.d("1novV1", "pathAudioString ==> " + pathAudioString);
 
         }//if การบันทึกเสียง ถ้าบันทึกเสร็จให้กลับมาหน้าเดิม
 
