@@ -71,7 +71,13 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
                                 getResources().getString(R.string.massage_have_space));
                        myAlert.myDialog();
 
-                   } // if
+                   } else if (aBoolean) {
+                       // non record audio
+                       MyAlert myAlert = new MyAlert(AddBusStop.this, R.drawable.kon48,
+                               getResources().getString(R.string.title_record_sound),
+                               getResources().getString(R.string.massage_record_sound));
+                       myAlert.myDialog();
+                   }
            } // onClick
        });
         //play controller
