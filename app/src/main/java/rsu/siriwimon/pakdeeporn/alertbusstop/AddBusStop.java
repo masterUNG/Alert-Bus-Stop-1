@@ -1,11 +1,16 @@
 package rsu.siriwimon.pakdeeporn.alertbusstop;
 
+import android.content.Intent;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -19,15 +24,28 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
     private EditText editText;
     private Button button;
     private String nameBusStopString;
+    private ImageView recodImageView, playimImageView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_addbusstop_layout);
+
         // Bind Widget
         editText = (EditText) findViewById(R.id.editText) ;
         button = (Button) findViewById(R.id.button2);
+        recodImageView = (ImageView) findViewById(R.id.imageView);
+        playimImageView = (ImageView) findViewById(R.id.imageView2);
+
+        //record controller
+        recodImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                startActivityForResult(intent, 0); //ใส่เลข 0 เป็น result
+            } // onclick บันทึกเสียง
+        });
 
         // button controller ปุ่มคลิ๊ก
        button.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +74,17 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
     } // Main Method
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if ((requestCode == 0)&&(resultCode == RESULT_OK)){
+            Log.d("lnovV1","Result OK");
+
+        }//if การบันทึกเสียง ถ้าบันทึกเสร็จให้กลับมาหน้าเดิม
+
+
+    }   // onActivityresult
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
