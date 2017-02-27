@@ -19,7 +19,8 @@ public class MyOpenHelper extends SQLiteOpenHelper{
             "NameBusStop text," +
             "PathBusStop text," +
             "Lat text," +
-            "lng text);";
+            "lng text, " +
+            "Destination text);";
 
     public MyOpenHelper(Context context) {
         super(context, database_name, null, database_version);
