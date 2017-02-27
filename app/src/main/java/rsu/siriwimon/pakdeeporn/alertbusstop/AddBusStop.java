@@ -4,16 +4,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,10 +30,12 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
     private ImageView recodImageView, playimImageView;
     private boolean aBoolean = true; // nonrecord sound
     private Uri uri;
-    private double laStartADouble = 13.964987 ;
-    private double lngStartADouble = 100.585154 ;
-    private double laBusStopADouble, lngBusStopADouble ;
-    private boolean locationABoolean = true ;
+    private double laStartADouble = 13.964987;
+    private double lngStartADouble = 100.585154;
+    private double laBusStopADouble, lngBusStopADouble;
+    private boolean locationABoolean = true;
+    private CheckBox checkBox;
+    private int checkboxAnInt = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +43,7 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
         setContentView(R.layout.my_addbusstop_layout);
 
         // Bind Widget
-        editText = (EditText) findViewById(R.id.editText) ;
-        button = (Button) findViewById(R.id.button2);
-        recodImageView = (ImageView) findViewById(R.id.imageView);
-        playimImageView = (ImageView) findViewById(R.id.imageView2);
+        bindWidget();
 
         //record controller
         recodImageView.setOnClickListener(new View.OnClickListener() {
@@ -56,47 +55,47 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
         });
 
         // button controller ปุ่มคลิ๊ก
-       button.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-             // Get Value From EditText รับค่าจาก EditText
-               nameBusStopString = editText.getText().toString().trim();
+                // Get Value From EditText รับค่าจาก EditText
+                nameBusStopString = editText.getText().toString().trim();
 
-               // Check spece
-                   if (nameBusStopString.equals("")) {
-                       // Have Space
-                        MyAlert myAlert = new MyAlert(AddBusStop.this,
-                                R.drawable.doremon48,
-                                getResources().getString(R.string.title_have_space),
-                                getResources().getString(R.string.massage_have_space));
-                       myAlert.myDialog();
+                // Check spece
+                if (nameBusStopString.equals("")) {
+                    // Have Space
+                    MyAlert myAlert = new MyAlert(AddBusStop.this,
+                            R.drawable.doremon48,
+                            getResources().getString(R.string.title_have_space),
+                            getResources().getString(R.string.massage_have_space));
+                    myAlert.myDialog();
 
-                   } else if (aBoolean) {
-                       // non record audio
-                       MyAlert myAlert = new MyAlert(AddBusStop.this, R.drawable.kon48,
-                               getResources().getString(R.string.title_record_sound),
-                               getResources().getString(R.string.massage_record_sound));
-                       myAlert.myDialog();
-                   } else if (locationABoolean) {
-                        // non marker
-                       MyAlert myAlert =new MyAlert(AddBusStop.this, R.drawable.bird48,
-                               getResources().getString(R.string.title_mark),
-                               getResources().getString(R.string.massage_mark));
-                       myAlert.myDialog();
+                } else if (aBoolean) {
+                    // non record audio
+                    MyAlert myAlert = new MyAlert(AddBusStop.this, R.drawable.kon48,
+                            getResources().getString(R.string.title_record_sound),
+                            getResources().getString(R.string.massage_record_sound));
+                    myAlert.myDialog();
+                } else if (locationABoolean) {
+                    // non marker
+                    MyAlert myAlert = new MyAlert(AddBusStop.this, R.drawable.bird48,
+                            getResources().getString(R.string.title_mark),
+                            getResources().getString(R.string.massage_mark));
+                    myAlert.myDialog();
 
-                   } else {
-                       //update value to SQlite
-                       updateValuetoSQlite();
+                } else {
+                    //update value to SQlite
+                    updateValuetoSQlite();
 
-                   }  // if
-           } // onClick
-       });
+                }  // if
+            } // onClick
+        });
         //play controller
         playimImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-             //check record
+                //check record
                 if (aBoolean) {
                     // non record ไม่มีการบันทึกเสียงให้แจ้ง
                     MyAlert myAlert = new MyAlert(AddBusStop.this, R.drawable.nobita48,
@@ -105,7 +104,7 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
                     myAlert.myDialog();
                 } else {
                     // record ok ให้เสียงร้องเล่นเสียง
-                    MediaPlayer mediaPlayer = MediaPlayer.create(AddBusStop.this,uri);
+                    MediaPlayer mediaPlayer = MediaPlayer.create(AddBusStop.this, uri);
                     mediaPlayer.start();
                 }
             } // onclick
@@ -117,7 +116,26 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
     } // Main Method
 
+    private void bindWidget() {
+        editText = (EditText) findViewById(R.id.editText);
+        button = (Button) findViewById(R.id.button2);
+        recodImageView = (ImageView) findViewById(R.id.imageView);
+        playimImageView = (ImageView) findViewById(R.id.imageView2);
+        checkBox = (CheckBox) findViewById(R.id.checkBox1);
+    }
+
     private void updateValuetoSQlite() {
+
+        //Check CheckBox
+        if (checkBox.isChecked()) {
+            checkboxAnInt = 1;
+        }
+
+        Log.d("27febV1", "Name  ==> " + nameBusStopString);
+        Log.d("27febV1", "Path  ==> " + pathAudioString);
+        Log.d("27febV1", "Lat  ==> " + Double.toString(laBusStopADouble));
+        Log.d("27febV1", "Lng  ==> " + Double.toString(lngBusStopADouble));
+        Log.d("27febV1", "Destination  ==> " + Integer.toString(checkboxAnInt));
 
     } // updateValuetoSQlite บันทึกข้อมูลลงฐานข้อมูลsqlite
 
@@ -125,8 +143,8 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ((requestCode == 0)&&(resultCode == RESULT_OK)){
-            Log.d("1novV1","Result OK");
+        if ((requestCode == 0) && (resultCode == RESULT_OK)) {
+            Log.d("1novV1", "Result OK");
             aBoolean = false; //record sound ok
             uri = data.getData();
 
@@ -152,7 +170,7 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-       // create Map
+        // create Map
         LatLng centerLatLng = new LatLng(laStartADouble, lngStartADouble);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, 16)); // 16 คือตำแหน่งซูม มุมมอง
 
@@ -162,16 +180,16 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
             @Override
             public void onMapClick(LatLng latLng) {
 
-                locationABoolean = false ;
+                locationABoolean = false;
 
                 mMap.clear(); //ลบมากเกอร์ต่างๆ
                 mMap.addMarker(new MarkerOptions()
-                .position(latLng));
+                        .position(latLng));
 
                 laBusStopADouble = latLng.latitude; // เลือกค่าละลอง
                 lngBusStopADouble = latLng.longitude;
 
-                Log.d("1novV1","Lat ==>" + laBusStopADouble);
+                Log.d("1novV1", "Lat ==>" + laBusStopADouble);
                 Log.d("1novV1", "lng ==>" + lngBusStopADouble);
 
             } // on map click
