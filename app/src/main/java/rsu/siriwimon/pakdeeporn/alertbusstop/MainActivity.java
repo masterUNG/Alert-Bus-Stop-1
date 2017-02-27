@@ -73,10 +73,32 @@ public class MainActivity extends AppCompatActivity {
 
     }// Main Medthod
 
+    //นี่คือ เมทอด ที่หาระยะ ระหว่างจุด
+    private static double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515 * 1.609344 * 1000;
+
+
+        return (dist);
+    }
+
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
+    }
+
     private void myLoop() {
 
         //Doing
         afterResume();
+
+        calculateAllDistance();
 
 
         //Post
@@ -92,6 +114,37 @@ public class MainActivity extends AppCompatActivity {
 
 
     }   // myLoop
+
+    private void calculateAllDistance() {
+
+        try {
+
+            SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
+                    MODE_PRIVATE, null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM busTABLE", null);
+            int intCursor = cursor.getCount();
+            double[] destinationLatDoubles = new double[intCursor];
+            double[] destinationLngDoubles = new double[intCursor];
+            double[] distanceDoubles = new double[intCursor];
+
+            for (int i=0;i<intCursor;i++) {
+
+                destinationLatDoubles[i] = Double.parseDouble(cursor.getString(3));
+                destinationLngDoubles[i] = Double.parseDouble(cursor.getString(4));
+                distanceDoubles[i] = distance(userLatADouble, userLngADouble,
+                        destinationLatDoubles[i], destinationLngDoubles[i]);
+
+                Log.d("27febV4", "ระยะห่างจากจุดที่ (" + i + ") ==> " + distanceDoubles[i]);
+
+            }   //for
+
+
+                    cursor.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }   // calculate
 
     @Override
     protected void onStop() {
@@ -186,6 +239,8 @@ public class MainActivity extends AppCompatActivity {
             ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(MainActivity.this,
                     android.R.layout.simple_list_item_1, nameStrings);
             listView.setAdapter(stringArrayAdapter);
+
+            cursor.close();
 
 
         } catch (Exception e) {
