@@ -137,6 +137,14 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
         Log.d("27febV1", "Lng  ==> " + Double.toString(lngBusStopADouble));
         Log.d("27febV1", "Destination  ==> " + Integer.toString(checkboxAnInt));
 
+        //Add New Value to SQLite
+        MyManage myManage = new MyManage(AddBusStop.this);
+        myManage.addValueToSQLite(nameBusStopString, pathAudioString,
+                Double.toString(laBusStopADouble),
+                Double.toString(lngBusStopADouble),
+                Integer.toString(checkboxAnInt));
+        finish();
+
     } // updateValuetoSQlite บันทึกข้อมูลลงฐานข้อมูลsqlite
 
     @Override
