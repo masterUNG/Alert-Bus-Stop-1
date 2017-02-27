@@ -32,7 +32,8 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
     private Uri uri;
     private double laStartADouble = 13.964987 ;
     private double lngStartADouble = 100.585154 ;
-    private  double laBusStopADouble, lngBusStopADouble ;
+    private double laBusStopADouble, lngBusStopADouble ;
+    private boolean locationABoolean = true ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,18 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
                                getResources().getString(R.string.title_record_sound),
                                getResources().getString(R.string.massage_record_sound));
                        myAlert.myDialog();
-                   }
+                   } else if (locationABoolean) {
+                        // non marker
+                       MyAlert myAlert =new MyAlert(AddBusStop.this, R.drawable.bird48,
+                               getResources().getString(R.string.title_mark),
+                               getResources().getString(R.string.massage_mark));
+                       myAlert.myDialog();
+
+                   } else {
+                       //update value to SQlite
+                       updateValuetoSQlite();
+
+                   }  // if
            } // onClick
        });
         //play controller
@@ -104,6 +116,10 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     } // Main Method
+
+    private void updateValuetoSQlite() {
+
+    } // updateValuetoSQlite บันทึกข้อมูลลงฐานข้อมูลsqlite
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -145,6 +161,8 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
+
+                locationABoolean = false ;
 
                 mMap.clear(); //ลบมากเกอร์ต่างๆ
                 mMap.addMarker(new MarkerOptions()
