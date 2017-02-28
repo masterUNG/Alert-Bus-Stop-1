@@ -188,14 +188,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("27febV4", "boolean Notification ==> " + notificationABoolean);
 
                 //Check Distance
-                if ((distanceDoubles[i] <= seriousDistance[indexDistance[i]])) {
+                if ((distanceDoubles[i] <= seriousDistance[indexDistance[i]])) {    // เมื่ออยู่ในวง
                     Log.d("27febV4", "Notification Work");
 
-                    //อยู่ในวง noti
-//                    notificationABoolean = false;
-//                    myNotification(cursor.getString(2));
-
-                    // เข้าเมือ Noti เป็น True
+                    // ดูว่าเป็นการเข้าครั้งแรกปะ
                     if (notificationABoolean) {
 
                         notificationABoolean = false;
@@ -204,9 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     }   // if2
 
 
-                } else if (!((distanceDoubles[i] <= seriousDistance[indexDistance[i]]) || (notificationABoolean))) {
-                    notificationABoolean = true;
-                }   // if
+                }   //if1
 
 
                 cursor.moveToNext();
