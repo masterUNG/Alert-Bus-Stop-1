@@ -21,6 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
     // Explicit
@@ -111,7 +113,11 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationManager notificationManager = (NotificationManager)
                 getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1000, notification);
+
+        Random random = new Random();
+        int i = random.nextInt(1000);
+
+        notificationManager.notify(i, notification);
 
     }   // myNoti
 
