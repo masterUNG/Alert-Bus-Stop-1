@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private MyManage myManage;
     private LocationManager locationManager;
     private Criteria criteria;
-    private Double userLatADouble = 13.964987, userLngADouble = 100.585154;
+    private Double userLatADouble = 13.964987, userLngADouble = 100.585154, aDouble = 0.0;
     private boolean aBoolean = true, notificationABoolean = true;
 
     @Override
@@ -192,21 +192,26 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("27febV4", "index ==> " + indexDistance[i]);
                 Log.d("27febV4", "ระยะคำนวน ==> " + seriousDistance[indexDistance[i]]);
                 Log.d("27febV4", "boolean Notification ==> " + notificationABoolean);
+                Log.d("27febV4", "aDouble ==> " + aDouble);
 
                 //Check Distance
                 if ((distanceDoubles[i] <= seriousDistance[indexDistance[i]])) {    // เมื่ออยู่ในวง
                     Log.d("27febV4", "Notification Work");
 
+
+
                     // ดูว่าเป็นการเข้าครั้งแรกปะ
                     if (notificationABoolean) {
-
+                        aDouble = seriousDistance[indexDistance[i]];
                         notificationABoolean = false;
                         myNotification(cursor.getString(2));
 
-                    }   // if2
+                    }
 
 
-                }   //if1
+                } else if (distanceDoubles[i] <= (aDouble + 10.0)) {
+                    notificationABoolean = true;
+                }
 
 
                 cursor.moveToNext();
