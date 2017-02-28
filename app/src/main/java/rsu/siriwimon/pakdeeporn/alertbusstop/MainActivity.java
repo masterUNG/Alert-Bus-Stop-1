@@ -1,5 +1,7 @@
 package rsu.siriwimon.pakdeeporn.alertbusstop;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,9 +10,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private Criteria criteria;
     private Double userLatADouble = 13.964987, userLngADouble = 100.585154;
-    private boolean aBoolean = true;
+    private boolean aBoolean = true, notificationABoolean = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +76,51 @@ public class MainActivity extends AppCompatActivity {
 
 
     }// Main Medthod
+
+    private void myNotification() {
+
+        if (notificationABoolean) {
+
+            notificationABoolean = false;
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.drawable.doremon48);
+            builder.setTicker("Help Me Please Arrive ");
+            builder.setWhen(System.currentTimeMillis());
+            builder.setContentTitle("Alert");
+            builder.setContentText("Help Me Please Arrive ");
+            builder.setAutoCancel(true);
+
+            //Set Sound
+//
+//        Uri soundUri = Uri.parse("android.resource://" +
+//                MainActivity.this.getPackageName() +
+//                "/" + R.raw.bells);
+
+//       Uri soundUri = Uri.parse(Environment.getExternalStorageDirectory()+"/storage/emulated/0/recording983304787.3gp");
+
+            Uri soundUri = Uri.parse("file:/storage/emulated/0/recording983304787.3gpp");
+
+
+
+            builder.setSound(soundUri);
+
+            android.app.Notification notification = builder.build();
+
+//            notification.flags |= Notification.DEFAULT_LIGHTS
+//                    | Notification.FLAG_AUTO_CANCEL
+//                    | Notification.FLAG_ONLY_ALERT_ONCE;
+
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+            NotificationManager notificationManager = (NotificationManager)
+                    getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(1000, notification);
+
+
+        }   // if
+
+    }   // myNoti
 
     //นี่คือ เมทอด ที่หาระยะ ระหว่างจุด
     private static double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -143,6 +192,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("27febV4", "ระยะห่างจากจุดที่ (" + i + ") ==> " + distanceDoubles[i]);
                 Log.d("27febV4", "index ==> " + indexDistance[i]);
                 Log.d("27febV4", "ระยะคำนวน ==> " + seriousDistance[indexDistance[i]]);
+
+                //Check Distance
+                if (distanceDoubles[i] <= seriousDistance[indexDistance[i]]) {
+                    Log.d("27febV4", "Notification Work");
+                    myNotification();
+                }
+
+
                 cursor.moveToNext();
             }   //for
 
