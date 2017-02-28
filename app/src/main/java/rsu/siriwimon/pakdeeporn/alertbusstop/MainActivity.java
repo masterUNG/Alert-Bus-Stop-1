@@ -119,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
+            double[] seriousDistance = new double[]{20.0, 300.0};
+
             SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
                     MODE_PRIVATE, null);
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM busTABLE", null);
@@ -127,20 +129,24 @@ public class MainActivity extends AppCompatActivity {
             double[] destinationLatDoubles = new double[intCursor];
             double[] destinationLngDoubles = new double[intCursor];
             double[] distanceDoubles = new double[intCursor];
+            int[] indexDistance = new int[intCursor];
 
-            for (int i=0;i<intCursor;i++) {
+            for (int i = 0; i < intCursor; i++) {
 
                 destinationLatDoubles[i] = Double.parseDouble(cursor.getString(3));
                 destinationLngDoubles[i] = Double.parseDouble(cursor.getString(4));
                 distanceDoubles[i] = distance(userLatADouble, userLngADouble,
                         destinationLatDoubles[i], destinationLngDoubles[i]);
+                indexDistance[i] = Integer.parseInt(cursor.getString(5));
 
                 Log.d("27febV4", "ระยะห่างจากจุดที่ (" + i + ") ==> " + distanceDoubles[i]);
+                Log.d("27febV4", "index ==> " + indexDistance[i]);
+                Log.d("27febV4", "ระยะคำนวน ==> " + seriousDistance[indexDistance[i]]);
                 cursor.moveToNext();
             }   //for
 
 
-                    cursor.close();
+            cursor.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
