@@ -1,5 +1,7 @@
 package rsu.siriwimon.pakdeeporn.alertbusstop;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,9 +10,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private Criteria criteria;
     private Double userLatADouble = 13.964987, userLngADouble = 100.585154;
-    private boolean aBoolean = true;
+    private boolean aBoolean = true, notificationABoolean = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +55,16 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               mySoundEfect(R.raw.add_bus1);
+                mySoundEfect(R.raw.add_bus1);
             }// onClick
         });
         // Long Click Button Controller
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Log.d("31octV1","You Click Long"); //ควบคุมการคลิก
+                Log.d("31octV1", "You Click Long"); //ควบคุมการคลิก
 
-                startActivity(new Intent(MainActivity.this,AddBusStop.class));//เคลื่อนย้ายการทำงาน
+                startActivity(new Intent(MainActivity.this, AddBusStop.class));//เคลื่อนย้ายการทำงาน
 
                 return true;
 
@@ -72,6 +76,44 @@ public class MainActivity extends AppCompatActivity {
 
 
     }// Main Medthod
+
+    private void myNotification(String strSound) {
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.doremon48);
+        builder.setTicker("Help Me Please Arrive ");
+        builder.setWhen(System.currentTimeMillis());
+        builder.setContentTitle("Alert");
+        builder.setContentText("Help Me Please Arrive ");
+        builder.setAutoCancel(true);
+
+        //Set Sound
+//
+//        Uri soundUri = Uri.parse("android.resource://" +
+//                MainActivity.this.getPackageName() +
+//                "/" + R.raw.bells);
+
+//       Uri soundUri = Uri.parse(Environment.getExternalStorageDirectory()+"/storage/emulated/0/recording983304787.3gp");
+
+        Uri soundUri = Uri.parse("file:" + strSound);
+
+
+        builder.setSound(soundUri);
+
+        android.app.Notification notification = builder.build();
+
+//            notification.flags |= Notification.DEFAULT_LIGHTS
+//                    | Notification.FLAG_AUTO_CANCEL
+//                    | Notification.FLAG_ONLY_ALERT_ONCE;
+
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        NotificationManager notificationManager = (NotificationManager)
+                getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1000, notification);
+
+    }   // myNoti
 
     //นี่คือ เมทอด ที่หาระยะ ระหว่างจุด
     private static double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -143,6 +185,24 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("27febV4", "ระยะห่างจากจุดที่ (" + i + ") ==> " + distanceDoubles[i]);
                 Log.d("27febV4", "index ==> " + indexDistance[i]);
                 Log.d("27febV4", "ระยะคำนวน ==> " + seriousDistance[indexDistance[i]]);
+                Log.d("27febV4", "boolean Notification ==> " + notificationABoolean);
+
+                //Check Distance
+                if ((distanceDoubles[i] <= seriousDistance[indexDistance[i]])) {    // เมื่ออยู่ในวง
+                    Log.d("27febV4", "Notification Work");
+
+                    // ดูว่าเป็นการเข้าครั้งแรกปะ
+                    if (notificationABoolean) {
+
+                        notificationABoolean = false;
+                        myNotification(cursor.getString(2));
+
+                    }   // if2
+
+
+                }   //if1
+
+
                 cursor.moveToNext();
             }   //for
 
@@ -195,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -231,13 +290,13 @@ public class MainActivity extends AppCompatActivity {
             //Read All SQLite
             SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
                     MODE_PRIVATE, null);
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM busTABLE WHERE Destination = 1" , null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM busTABLE WHERE Destination = 1", null);
             cursor.moveToFirst();
             int intCursor = cursor.getCount();
             Log.d("27febV2", "intCursor ==> " + intCursor);
 
             String[] nameStrings = new String[intCursor];
-            for (int i=0;i<intCursor;i++) {
+            for (int i = 0; i < intCursor; i++) {
 
                 nameStrings[i] = cursor.getString(1);
                 cursor.moveToNext();
@@ -259,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
     }   // createListView
 
     private void mySoundEfect(int intSound) {
-        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(),intSound);
+        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), intSound);
         mediaPlayer.start(); //ทำการร้อง
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
