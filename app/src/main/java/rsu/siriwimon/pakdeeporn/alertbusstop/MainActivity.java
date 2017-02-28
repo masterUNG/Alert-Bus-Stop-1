@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
                     MODE_PRIVATE, null);
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM busTABLE", null);
+            cursor.moveToFirst();
             int intCursor = cursor.getCount();
             double[] destinationLatDoubles = new double[intCursor];
             double[] destinationLngDoubles = new double[intCursor];
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                         destinationLatDoubles[i], destinationLngDoubles[i]);
 
                 Log.d("27febV4", "ระยะห่างจากจุดที่ (" + i + ") ==> " + distanceDoubles[i]);
-
+                cursor.moveToNext();
             }   //for
 
 
