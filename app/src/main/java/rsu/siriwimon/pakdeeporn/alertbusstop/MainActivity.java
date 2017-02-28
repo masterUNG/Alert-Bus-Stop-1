@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         return (rad * 180 / Math.PI);
     }
 
+    //เมธอดที่ ทำงานวนไปวนมา ทุก 1 sec
     private void myLoop() {
 
         //Doing
