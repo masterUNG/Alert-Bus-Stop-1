@@ -55,16 +55,16 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               mySoundEfect(R.raw.add_bus1);
+                mySoundEfect(R.raw.add_bus1);
             }// onClick
         });
         // Long Click Button Controller
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Log.d("31octV1","You Click Long"); //ควบคุมการคลิก
+                Log.d("31octV1", "You Click Long"); //ควบคุมการคลิก
 
-                startActivity(new Intent(MainActivity.this,AddBusStop.class));//เคลื่อนย้ายการทำงาน
+                startActivity(new Intent(MainActivity.this, AddBusStop.class));//เคลื่อนย้ายการทำงาน
 
                 return true;
 
@@ -77,21 +77,18 @@ public class MainActivity extends AppCompatActivity {
 
     }// Main Medthod
 
-    private void myNotification() {
+    private void myNotification(String strSound) {
 
-        if (notificationABoolean) {
 
-            notificationABoolean = false;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.doremon48);
+        builder.setTicker("Help Me Please Arrive ");
+        builder.setWhen(System.currentTimeMillis());
+        builder.setContentTitle("Alert");
+        builder.setContentText("Help Me Please Arrive ");
+        builder.setAutoCancel(true);
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-            builder.setSmallIcon(R.drawable.doremon48);
-            builder.setTicker("Help Me Please Arrive ");
-            builder.setWhen(System.currentTimeMillis());
-            builder.setContentTitle("Alert");
-            builder.setContentText("Help Me Please Arrive ");
-            builder.setAutoCancel(true);
-
-            //Set Sound
+        //Set Sound
 //
 //        Uri soundUri = Uri.parse("android.resource://" +
 //                MainActivity.this.getPackageName() +
@@ -99,26 +96,22 @@ public class MainActivity extends AppCompatActivity {
 
 //       Uri soundUri = Uri.parse(Environment.getExternalStorageDirectory()+"/storage/emulated/0/recording983304787.3gp");
 
-            Uri soundUri = Uri.parse("file:/storage/emulated/0/recording983304787.3gpp");
+        Uri soundUri = Uri.parse("file:" + strSound);
 
 
+        builder.setSound(soundUri);
 
-            builder.setSound(soundUri);
-
-            android.app.Notification notification = builder.build();
+        android.app.Notification notification = builder.build();
 
 //            notification.flags |= Notification.DEFAULT_LIGHTS
 //                    | Notification.FLAG_AUTO_CANCEL
 //                    | Notification.FLAG_ONLY_ALERT_ONCE;
 
-            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-            NotificationManager notificationManager = (NotificationManager)
-                    getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(1000, notification);
-
-
-        }   // if
+        NotificationManager notificationManager = (NotificationManager)
+                getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1000, notification);
 
     }   // myNoti
 
@@ -192,12 +185,28 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("27febV4", "ระยะห่างจากจุดที่ (" + i + ") ==> " + distanceDoubles[i]);
                 Log.d("27febV4", "index ==> " + indexDistance[i]);
                 Log.d("27febV4", "ระยะคำนวน ==> " + seriousDistance[indexDistance[i]]);
+                Log.d("27febV4", "boolean Notification ==> " + notificationABoolean);
 
                 //Check Distance
-                if (distanceDoubles[i] <= seriousDistance[indexDistance[i]]) {
+                if ((distanceDoubles[i] <= seriousDistance[indexDistance[i]])) {
                     Log.d("27febV4", "Notification Work");
-                    myNotification();
-                }
+
+                    //อยู่ในวง noti
+//                    notificationABoolean = false;
+//                    myNotification(cursor.getString(2));
+
+                    // เข้าเมือ Noti เป็น True
+                    if (notificationABoolean) {
+
+                        notificationABoolean = false;
+                        myNotification(cursor.getString(2));
+
+                    }   // if2
+
+
+                } else if (!((distanceDoubles[i] <= seriousDistance[indexDistance[i]]) || (notificationABoolean))) {
+                    notificationABoolean = true;
+                }   // if
 
 
                 cursor.moveToNext();
@@ -252,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -288,13 +296,13 @@ public class MainActivity extends AppCompatActivity {
             //Read All SQLite
             SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
                     MODE_PRIVATE, null);
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM busTABLE WHERE Destination = 1" , null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM busTABLE WHERE Destination = 1", null);
             cursor.moveToFirst();
             int intCursor = cursor.getCount();
             Log.d("27febV2", "intCursor ==> " + intCursor);
 
             String[] nameStrings = new String[intCursor];
-            for (int i=0;i<intCursor;i++) {
+            for (int i = 0; i < intCursor; i++) {
 
                 nameStrings[i] = cursor.getString(1);
                 cursor.moveToNext();
@@ -316,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
     }   // createListView
 
     private void mySoundEfect(int intSound) {
-        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(),intSound);
+        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), intSound);
         mediaPlayer.start(); //ทำการร้อง
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
