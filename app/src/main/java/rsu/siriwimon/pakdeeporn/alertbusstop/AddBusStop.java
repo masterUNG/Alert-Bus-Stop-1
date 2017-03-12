@@ -45,6 +45,16 @@ public class AddBusStop extends FragmentActivity implements OnMapReadyCallback {
         // Bind Widget
         bindWidget();
 
+
+        try {
+            laStartADouble = getIntent().getDoubleExtra("Lat", 13.964987);
+            lngStartADouble = getIntent().getDoubleExtra("Lng", 100.585154);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        }
+
         //record controller
         recodImageView.setOnClickListener(new View.OnClickListener() {
             @Override

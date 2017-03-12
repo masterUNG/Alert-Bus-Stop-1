@@ -2,6 +2,7 @@ package rsu.siriwimon.pakdeeporn.alertbusstop;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -66,7 +67,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onLongClick(View view) {
                 Log.d("31octV1", "You Click Long"); //ควบคุมการคลิก
 
-                startActivity(new Intent(MainActivity.this, AddBusStop.class));//เคลื่อนย้ายการทำงาน
+             //   startActivity(new Intent(MainActivity.this, AddBusStop.class));//เคลื่อนย้ายการทำงาน
+                Intent intent = new Intent(MainActivity.this,AddBusStop.class);
+                intent.putExtra("Lat",userLatADouble);
+                intent.putExtra("lng",userLngADouble);
+                startActivity(intent);
 
                 return true;
 
@@ -98,18 +103,18 @@ public class MainActivity extends AppCompatActivity {
 
 //       Uri soundUri = Uri.parse(Environment.getExternalStorageDirectory()+"/storage/emulated/0/recording983304787.3gp");
 
-        Uri soundUri = Uri.parse("file:" + strSound);
+        Uri soundUri = Uri.parse("file:" + strSound);//เอาเสียงจากฐานข้อมูล
 
 
         builder.setSound(soundUri);
 
         android.app.Notification notification = builder.build();
 
-//            notification.flags |= Notification.DEFAULT_LIGHTS
+//            notification.flags |= Notification.DEFAULT_LIGHTS //เสียงเตือนไม่หยุด
 //                    | Notification.FLAG_AUTO_CANCEL
 //                    | Notification.FLAG_ONLY_ALERT_ONCE;
 
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL; //เสียงร้องตือนครั้งเดียว
 
         NotificationManager notificationManager = (NotificationManager)
                 getSystemService(NOTIFICATION_SERVICE);
@@ -168,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            double[] seriousDistance = new double[]{20.0, 300.0};
+            double[] seriousDistance = new double[]{20.0, 300.0}; //แก้ไขระยะทาง
 
             SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
                     MODE_PRIVATE, null);
@@ -204,11 +209,11 @@ public class MainActivity extends AppCompatActivity {
                     if (notificationABoolean) {
                         aDouble = seriousDistance[indexDistance[i]];
                         notificationABoolean = false;
-                        myNotification(cursor.getString(2));
+                        myNotification(cursor.getString(2)); // 2 คือตำแหน่งเสียงที่อยุ่ในเครื่อง
 
                     }
 
-
+                    //ออกจากวง 10 เมตร
                 } else if (distanceDoubles[i] <= (aDouble + 10.0)) {
                     notificationABoolean = true;
                 }
@@ -264,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-
 
     @Override
     protected void onResume() {
