@@ -26,8 +26,6 @@ public class EditActivity  extends AppCompatActivity {
 
         //เชื่อม View
         txtNameBusStop = (EditText)findViewById(R.id.txtNameBusStop);
-        textPathBusStop = (EditText)findViewById(R.id.textPathBusStop);
-        textLat = (EditText)findViewById(R.id.textLat);
 
 
         btnEdit = (Button)findViewById(R.id.btnEdit);
